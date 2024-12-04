@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Calculadora de Fibra Óptica</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background-color: #f4f4f4;
+        }
+        .container {
+            max-width: 600px;
+            margin: 0 auto;
+            background-color: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+        h1 {
+            text-align: center;
+            color: #333;
+        }
+        label {
+            display: block;
+            margin-top: 10px;
+        }
+        input, button {
+            width: 100%;
+            padding: 10px;
+            margin-top: 5px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+        button {
+            background-color: #4CAF50;
+            color: white;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #45a049;
+        }
+        .result {
+            margin-top: 20px;
+            padding: 15px;
+            background-color: #f9f9f9;
+            border-radius: 5px;
+            border: 1px solid #ddd;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <h1>Calculadora de Potencia de Fibra Óptica</h1>
+        <label for="Ptransmisor">Potencia del Transmisor (dBm):</label>
+        <input type="number" id="Ptransmisor" placeholder="Potencia del Transmisor">
+
+        <label for="atenuacion">Atenuación de la Fibra (dB/km):</label>
+        <input type="number" id="atenuacion" placeholder="Atenuación de la Fibra">
+
+        <label for="longitud">Longitud del Enlace (km):</label>
+        <input type="number" id="longitud" placeholder="Longitud del Enlace">
+
+        <label for="perdidaConectores">Pérdida por Conectores (dB):</label>
+        <input type="number" id="perdidaConectores" placeholder="Pérdida por Conectores">
+
+        <label for="numConectores">Cantidad de Conectores:</label>
+        <input type="number" id="numConectores" placeholder="Cantidad de Conectores">
+
+        <label for="perdidaEmpalme">Pérdida por Empalme (dB):</label>
+        <input type="number" id="perdidaEmpalme" placeholder="Pérdida por Empalme">
+
+        <label for="numEmpalmes">Cantidad de Empalmes:</label>
+        <input type="number" id="numEmpalmes" placeholder="Cantidad de Empalmes">
+
+        <label for="sensibilidad">Sensibilidad del Receptor (dBm):</label>
+        <input type="number" id="sensibilidad" placeholder="Sensibilidad del Receptor">
+
+        <button onclick="calcularPotencia()">Calcular Potencia</button>
+
+        <div class="result" id="resultado"></div>
+    </div>
+
+    <script>
+        function calcularPotencia() {
+            // Obtener los valores de los campos
+            const Ptransmisor = parseFloat(document.getElementById('Ptransmisor').value);
+            const atenuacion = parseFloat(document.getElementById('atenuacion').value);
+            const longitud = parseFloat(document.getElementById('longitud').value);
+            const perdidaConectores = parseFloat(document.getElementById('perdidaConectores').value);
+            const numConectores = parseFloat(document.getElementById('numConectores').value);
+            const perdidaEmpalme = parseFloat(document.getElementById('perdidaEmpalme').value);
+            const numEmpalmes = parseFloat(document.getElementById('numEmpalmes').value);
+            const sensibilidad = parseFloat(document.getElementById('sensibilidad').value);
+
+            // Validar que los campos no estén vacíos
+            if (isNaN(Ptransmisor) || isNaN(atenuacion) || isNaN(longitud) ||
+                isNaN(perdidaConectores) || isNaN(numConectores) ||
+                isNaN(perdidaEmpalme) || isNaN(numEmpalmes) || isNaN(sensibilidad)) {
+                alert("Por favor, complete todos los campos correctamente.");
+                return;
+            }
+
+            // Calcular la pérdida total por longitud del cable
+            const perdidaLongitud = atenuacion * longitud;
+
+            // Calcular la pérdida total por empalmes
+            const perdidaEmpalmesTotal = perdidaEmpalme * numEmpalmes;
+
+            // Calcular la pérdida total por conectores
+            const perdidaConectoresTotal = perdidaConectores * numConectores;
+
+            // Calcular la pérdida total del enlace
+            const perdidaTotal = perdidaLongitud + perdidaEmpalmesTotal + perdidaConectoresTotal;
+
+            // Calcular el margen de potencia disponible
+            const margenPotenciaDisponible = Ptransmisor - perdidaTotal;
+
+            // Calcular el presupuesto energético final
+            const presupuestoEnergeticoFinal = margenPotenciaDisponible - perdidaTotal;
+
+           
+            let resultado = `La pérdida total por longitud del cable es: ${perdidaLongitud.toFixed(2)} dB.<br>`;
+            resultado += `La pérdida total por empalmes es: ${perdidaEmpalmesTotal.toFixed(2)} dB.<br>`;
+            resultado += `La pérdida total por conectores es: ${perdidaConectoresTotal.toFixed(2)} dB.<br>`;
+            resultado += `La pérdida total del enlace es: ${perdidaTotal.toFixed(2)} dB.<br>`;
+            resultado += `El margen de potencia disponible es: ${margenPotenciaDisponible.toFixed(2)} dB.<br>`;
+            resultado += `El presupuesto energético final es: ${presupuestoEnergeticoFinal.toFixed(2)} dBm.<br>`;
+
+            // Comparar con la sensibilidad del receptor
+            if (presupuestoEnergeticoFinal < 0) {
+                resultado += "La señal es demasiado débil para ser recibida correctamente.";
+            } else {
+                resultado += "La señal es suficientemente fuerte para ser recibida correctamente.";
+            }
+
+            document.getElementById('resultado').innerHTML = resultado;
+        }
+    </script>
+
+</body>
+</html>
+
+       
